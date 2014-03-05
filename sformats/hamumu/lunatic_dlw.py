@@ -58,8 +58,8 @@ level = Struct("level",
 	Array(32, special),
 	ULInt8("song"),
 	ULInt8("flags"),
-	MetaRepeater(lambda ctx: ctx["height"],
-		MetaRepeater(lambda ctx: ctx["width"], levelTile)
+	Array(lambda ctx: ctx["height"],
+		Array(lambda ctx: ctx["width"], levelTile)
 	)
 )
 
@@ -88,5 +88,5 @@ lunatic_dlw = Struct("world",
 	SLInt16("totalPoints"),
 	Array(400, Field("tileImage", 32*24)),
 	Array(200, tileData),
-	MetaRepeater(lambda ctx: ctx["levelCount"], level)
+	Array(lambda ctx: ctx["levelCount"], level)
 )

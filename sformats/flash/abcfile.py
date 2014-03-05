@@ -10,12 +10,12 @@ from construct import *
 
 class PrintAnchor(Anchor):
     def _parse(self, stream, context):
-        print "PrintAnchor(%s): %d" % (self.name, stream.tell())
+        print("PrintAnchor(%s): %d" % (self.name, stream.tell()))
         return stream.tell()
 
 class DebugValue(Value):
     def _parse(self, stream, context):
-        print "DebugValue(%s): %s" % (self.name, self.func(context))
+        print("DebugValue(%s): %s" % (self.name, self.func(context)))
         return self.func(context)
 
 def PrintContext():
@@ -92,7 +92,7 @@ class ConstantReference(Reference):
         try:
             return abcFile["constantPool"]["%ss" % self.kind][self.index]
         except:
-            print self
+            print(self)
             raise
 
 class QuickReference(Reference):
@@ -182,8 +182,8 @@ constantKind = Enum(ULInt8("kind"),
     UInt = 0x04,
     Double = 0x06,
     Utf8 = 0x01,
-    True = 0x0B,
-    False = 0x0A,
+    True_ = 0x0B,
+    False_ = 0x0A,
     Null = 0x0C,
     Undefined = 0x00,
     Namespace = 0x08,
@@ -201,7 +201,7 @@ options = Struct("options",
 methodSignature = Struct("methods",
     ULInt30("paramCount"),
     MultinameReference("returnType"),
-    MetaRepeater(lambda ctx: ctx["paramCount"], MultinameReference("paramTypes")),
+    Array(lambda ctx: ctx["paramCount"], MultinameReference("paramTypes")),
     StringReference("name"),
     BitStruct("flags",
         Flag("hasParamNames"),
@@ -216,7 +216,7 @@ methodSignature = Struct("methods",
         U30Repeater(options)
     ),
     If(lambda ctx: ctx["flags"]["hasParamNames"],
-        MetaRepeater(lambda ctx: ctx["paramCount"], StringReference("paramNames"))
+        Array(lambda ctx: ctx["paramCount"], StringReference("paramNames"))
     )
 )
 
@@ -352,8 +352,8 @@ abcfile = Struct("abcfile",
     U30Repeater(methodSignature),
     U30Repeater(metadata),
     ULInt30("class_len"),
-    MetaRepeater(lambda ctx: ctx["class_len"], instance),
-    MetaRepeater(lambda ctx: ctx["class_len"], classInfo),
+    Array(lambda ctx: ctx["class_len"], instance),
+    Array(lambda ctx: ctx["class_len"], classInfo),
     U30Repeater(script),
     U30Repeater(methodBody),
     #PrintAnchor("end")

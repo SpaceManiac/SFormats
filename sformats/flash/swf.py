@@ -4,7 +4,7 @@
 # Shockwave Flash player movies
 
 from construct import *
-from construct.lib.utils import StringIO
+from io import StringIO
 
 class arr(object):
     def __init__(self, type):
@@ -52,12 +52,12 @@ def fixbits(bits):
 
 def BitIntN(name):
     return Embed(Struct(name,
-        MetaRepeater(lambda ctx: ctx["nbits"], BitField("_bits", 1)),
+        Array(lambda ctx: ctx["nbits"], BitField("_bits", 1)),
         Value(name, lambda ctx: fixbits(ctx["_bits"]))
     ))
 
 def GreedyField(name):
-    return StringAdapter(GreedyRepeater(Field(name, 1)))
+    return StringAdapter(GreedyRange(Field(name, 1)))
 
 def KerningRecord(name, field):
     return Struct(name,
@@ -247,7 +247,7 @@ class SwfStruct(Struct):
 
 swf = SwfStruct("swf",
     header,
-    GreedyRepeater(tag)
+    GreedyRange(tag)
 )
 
 # bytecode extraction method
@@ -265,6 +265,6 @@ if __name__ == "__main__":
     for code in extract_bytecode(data):
         i += 1
         out = open('code%d.abc' % i, 'wb')
-        print 'writing abc file %s to code%d.abc' % (tagData['name'], i)
+        print('writing abc file %s to code%d.abc' % (tagData['name'], i))
         out.write(code)
         out.close()

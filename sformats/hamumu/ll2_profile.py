@@ -30,13 +30,14 @@ def clockFormatter(obj, ctx):
 	hours = minutes / 60
 	return "%d:%02d:%02.2d" % (hours, minutes % 60, seconds % 60)
 
+# todo: be fancier with name/number
 def VarNumber(name, len=1):
-	return EditableAdapter(NoteWrapper(EditNumber, functools.partial(countNumber, len)), [ULInt8, ULInt16][len-1](name))
+	return [ULInt8, ULInt16][len-1](name)
 def VarFlag(name):
-	return EditableAdapter(NoteWrapper(EditBoolean, functools.partial(countNumber, -1)), Flag(name))
+	return Flag(name)
 
 def Timer(name):
-	return EditableAdapter(NoteWrapper(EditNumber, clockFormatter), ULInt32(name))
+	return ULInt32(name)
 
 # structures
 

@@ -13,7 +13,7 @@ class MysteryCounter():
 		return Field("mystery_%d" % self.num, len)
 	def Finish(self):
 		self.num += 1
-		return FinishAdapter(OptionalGreedyRepeater(Field("mystery_%d" % self.num, 1)))
+		return FinishAdapter(OptionalGreedyRange(Field("mystery_%d" % self.num, 1)))
 		
 class FinishAdapter(Adapter):
 	def _decode(self, obj, ctx):
